@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.dabogadog</groupId>
     <artifactId>clioPDF</artifactId>
-    <version>1.13.0</version>
+    <version>1.13.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>clioPdf</name>
     <description>clioPdf es una biblioteca de Java que permite realizar comparaciones y análisis avanzados en archivos PDF. Esta biblioteca es útil para tareas como verificar la igualdad entre dos archivos PDF, comparar metadatos, explorar marcadores y enlaces, y más.</description>
