@@ -62,6 +62,7 @@ public class PDFAnalyzer {
             }
         } catch (Exception e) {
             logger.log(Level.WARNING, String.format("Error leyendo el PDF y buscando la cadena:", e));
+            allPhrasesFound=false;
         }
 
         return allPhrasesFound;
