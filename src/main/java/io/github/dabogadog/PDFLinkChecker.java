@@ -62,6 +62,8 @@ public class PDFLinkChecker {
     private static void validateLink(String urlString) {
         try {
             URL url = new URL(urlString);
+
+            if ("http".equals(url.getProtocol()) || "https".equals(url.getProtocol())) {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("HEAD");
             connection.connect();
@@ -78,6 +80,9 @@ public class PDFLinkChecker {
             }
 
             connection.disconnect();
+            } else {
+                System.out.println("Enlace no válido debido al protocolo: " + urlString);
+            }
         } catch (UnknownHostException e) {
             System.out.println("Nombre de host no válido en el enlace: " + urlString);
         } catch (IOException e) {
