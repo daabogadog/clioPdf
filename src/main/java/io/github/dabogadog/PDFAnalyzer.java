@@ -1,8 +1,9 @@
 package io.github.dabogadog;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.ReaderProperties;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +66,44 @@ public class PDFAnalyzer {
             allPhrasesFound=false;
         }
 
+        return allPhrasesFound;
+    }
+
+    public static boolean checkPhrasesInPDF(String filePath, String password, String targetPhrase) {
+        boolean allPhrasesFound = true;
+        try {
+            com.itextpdf.kernel.pdf.PdfReader reader = new com.itextpdf.kernel.pdf.PdfReader(filePath, new ReaderProperties().setPassword(password.getBytes()));
+            PdfDocument pdfDoc = new PdfDocument(reader);
+            List<String> phrasesToCheck = Arrays.asList(targetPhrase.split(","));
+            List<String> notFoundPhrases = new ArrayList<>();
+
+            for (String phrase : phrasesToCheck) {
+                boolean found = false;
+                for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
+                    String pageText = com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
+                    if (pageText.contains(phrase)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    notFoundPhrases.add(phrase);
+                    allPhrasesFound = false;
+                }
+            }
+            pdfDoc.close();
+            if (!notFoundPhrases.isEmpty()) {
+                StringBuilder errorMessage = new StringBuilder("Las siguientes frases no se encontraron en el PDF: ");
+                for (String phrase : notFoundPhrases) {
+                    errorMessage.append(phrase).append(", ");
+                }
+                errorMessage.delete(errorMessage.length() - 2, errorMessage.length());
+                logger.log(Level.WARNING, String.format("Frases no encontradas: %s", errorMessage.toString()));
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, String.format("Error leyendo el PDF y buscando la cadena:", e));
+            allPhrasesFound = false;
+        }
         return allPhrasesFound;
     }
 }
